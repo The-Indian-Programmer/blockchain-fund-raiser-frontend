@@ -30,20 +30,23 @@ const WalletConnectModal = ({ closeModal }) => {
 
                     const network = await provider.getNetwork();
 
-                    dispatch(handleWalletConnect({ isConnected: true, connection: provider.connection, chainId: network.chainId, address }))
+                    dispatch(handleWalletConnect({ isConnected: true, connection: provider.connection ? provider.connection.url : null, chainId: network.chainId, address }))
                     localStorage.setItem('isConnected', true)
+                    closeModal()
                 } catch (err) {
-                    console.log(err);
                     dispatch(handleWalletConnect({ isConnected: false, connection: null, chainId: null, address: null }))
                     localStorage.setItem('isConnected', false)
+                    closeModal()
                 }
             } else {
                 dispatch(handleWalletConnect({ isConnected: false, connection: null, chainId: null, address: null }))
                 localStorage.setItem('isConnected', false)
+                closeModal()
             }
         } catch (error) {
             dispatch(handleWalletConnect({ isConnected: false, connection: null, chainId: null, address: null }))
             localStorage.setItem('isConnected', false)
+            closeModal()
         }
     }
     return (
@@ -72,25 +75,25 @@ const WalletConnectModal = ({ closeModal }) => {
                     <button onClick={connectWallet} className="relative flex items-center text-white font-extrabold px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 border border-gray-500 mb-2 rounded overflow-hidden transition-all">
                         <img className='walleticon' src={Metamask} /> Connect with Metamask
                     </button>
-                    <button className="flex items-center px-4 py-2 text-white font-extrabold  bg-gradient-to-r from-blue-500 to-indigo-500 border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 text-white font-extrabold  bg-gradient-to-r from-blue-500 to-indigo-500 border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={Coinbase} /> Connect with Coinbase
                     </button>
-                    <button className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-green-500 to-blue-500 text-white border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-green-500 to-blue-500 text-white border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={WalletConnect} /> Connect with WalletConnect
                     </button>
-                    <button className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-extrabold border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-extrabold border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={Portis} /> Connect with Portis
                     </button>
-                    <button className="flex items-center px-4 py-2 font-extrabold  bg-gradient-to-r from-orange-500 to-yellow-500 text-white border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 font-extrabold  bg-gradient-to-r from-orange-500 to-yellow-500 text-white border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={Fortmatic} /> Connect with Fortmatic
                     </button>
-                    <button className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-blue-400 to-purple-500 text-white border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-blue-400 to-purple-500 text-white border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={Torus} /> Connect with Torus
                     </button>
-                    <button className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-red-500 to-pink-500 text-white border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-red-500 to-pink-500 text-white border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={Authereum} /> Connect with Authereum
                     </button>
-                    <button className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-indigo-500 to-blue-500 text-white border border-gray-500 mb-2 rounded">
+                    <button disabled={true} className="flex items-center px-4 py-2 font-extrabold bg-gradient-to-r from-indigo-500 to-blue-500 text-white border border-gray-500 mb-2 rounded disabled:opacity-30">
                         <img className='walleticon' src={Mew} /> Connect with MEW wallet
                     </button>
 

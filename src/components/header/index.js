@@ -40,6 +40,7 @@ const Header = () => {
             setConfirmationModalData(newData);
         } else {
             setConfirmationModalData({});
+            setConfirmationModal(false);
         }
     }
 
@@ -51,21 +52,47 @@ const Header = () => {
         }
     };
 
+
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
 
 
+    // const isEmptyUserData = () => {
+    //     let keys = !isEmpty(userData) ? Object.keys(userData) : [];
+    //     let empty = true;
+    //     keys.forEach((key) => {
+    //         if (!isEmpty(userData[key])) {
+    //             empty = false;
+    //         }
+    //     })
+    //     return empty;
+    // }
+
     let isWalletConnected = false;
-    if (isEmpty(userData) && isEmpty(userData.address) && (userData.isConnected == false)) {
+    if (isEmpty(userData.address) && isEmpty(userData.isConnected)) {
         isWalletConnected = false;
     } else {
         isWalletConnected = true;
     }
+
+
+    useEffect(() => {
+        if (!isWalletConnected) return
+        let newData = {
+            title: 'Are you sure you want to disconnect?',
+            onSubmit: () => {
+                disConnectWallet();
+            },
+            onCancel: () => {
+                setConfirmationModal(false);
+            }
+        }
+        setConfirmationModalData(newData);
+    }, [isWalletConnected])
 
 
 
@@ -73,19 +100,19 @@ const Header = () => {
         let img = null;
 
         if (connection) {
-            if (connection.url == 'metamask') {
+            if (connection == 'metamask') {
                 img = Metamask;
-            } else if (connection.url == 'coinbase') {
+            } else if (connection == 'coinbase') {
                 img = Coinbase;
-            } else if (connection.url == 'mew') {
+            } else if (connection == 'mew') {
                 img = Mew;
-            } else if (connection.url == 'authereum') {
+            } else if (connection == 'authereum') {
                 img = Authereum;
-            } else if (connection.url == 'fortmatic') {
+            } else if (connection == 'fortmatic') {
                 img = Fortmatic;
-            } else if (connection.url == 'portis') {
+            } else if (connection == 'portis') {
                 img = Portis;
-            } else if (connection.url == 'torus') {
+            } else if (connection == 'torus') {
                 img = Torus;
             } else {
                 img = null;
@@ -94,7 +121,7 @@ const Header = () => {
 
         return (
             <button
-                className="flex items-center px-4 py-2 text-white bg-blue-500 border border-transparent rounded-md hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                className={`${scrolling ? 'border border-blue-600' : 'bg-white text-blue-500'} flex items-center px-4 py-2  border border-transparent rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 hover:text-black `}
                 onClick={() => handleConfirmationModal()}
             >
                 {!isEmpty(img) ? <img src={img} className="w-5 h-5 mr-2" /> : <svg
@@ -119,33 +146,34 @@ const Header = () => {
 
     const disConnectWallet = async () => {
         try {
-            if (window.ethereum && window.ethereum.selectedAddress) {
+            if (window.ethereum && window.ethereum.isConnected()) {
                 // Disconnect the wallet by resetting the provider and signer
                 window.ethereum.provider = null;
+                window.ethereum.chainId = null;
+                // window.ethereum.disconnect()
                 // Clear the local storage and Redux state related to the wallet connection
                 dispatch(handleWalletDisconnect());
                 handleConfirmationModal({ status: false });
                 localStorage.setItem('isConnected', false);
+            } else {
+                // console.log(window.ethereum);
             }
         } catch (error) {
             console.error('Error disconnecting the wallet:', error);
         }
     }
 
+ 
 
-    console.log(userData);
-    console.log(isWalletConnected, 'isWalletConnected');
-    console.log(isEmpty(userData), 'isEmpty(userData)');
-    console.log(isEmpty(userData.address), 'isEmpty(userData.address)');
     return (
         <>
-            <nav className={`${!scrolling ? 'bg-white-200 ' : 'bg-gradient-to-r from-blue-500 to-purple-600'} py-4 px-6 flex items-center justify-between shadow-lg fixed top-0 left-0 right-0`}>
+            <nav className={`${scrolling ? 'bg-white text-blue-500' : 'text-white bg-gradient-to-r from-blue-500 to-purple-600'} py-4 px-6 flex items-center justify-between shadow-lg fixed top-0 left-0 right-0`}>
                 <Link to='/' className="flex items-center" role='button'>
                     <svg className="h-6 w-6 text-white bg-blue-500 rounded-full p-1 ">
                         <path className="fill-current" d="M9.313 14.92c-.028.193-.07.379-.124.56l-.375 1.499h5.373l-.374-1.499a3.001 3.001 0 0 0-.124-.56l-.506-1.52a4.468 4.468 0 0 0-.468-1.015L12 10.5l-.218-.655a4.468 4.468 0 0 0-.468 1.015l-.506 1.52zM16.5 5h-2V3a2 2 0 0 0-4 0v2h-2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm-1 10H6V7h9v8z" />
                     </svg>
 
-                    <span className='text-black ml-3 md:block lg:block hidden font-extrabold text-xl'>Buy me a coffee</span>
+                    <span className='ml-3 md:block lg:block hidden font-extrabold text-xl bg-none hover:bg-none'>Buy me a coffee</span>
                 </Link>
                 {(!isWalletConnected) ? <button onClick={() => setConnectModal(true)} className="flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
                     <svg className="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,6 +184,7 @@ const Header = () => {
 
             </nav>
             {showConnectModal && <WalletConnectModal closeModal={() => setConnectModal(false)} />}
+
             {showConfirmationModal && <ConfirmationModal isOpen={showConfirmationModal} closeModal={() => handleConfirmationModal({ status: false })} title={confirmationModalData.title} onSubmit={confirmationModalData.onSubmit} onCancel={confirmationModalData.onCancel} />}
         </>
     )

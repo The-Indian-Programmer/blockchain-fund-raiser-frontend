@@ -2,6 +2,7 @@ import React, { Suspense, useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { publicRoute } from '../routes';
 import Header from '../../components/header';
+import Footer from '../../components/footer';
 export default function PublicLayout(props) {
 
 
@@ -24,6 +25,7 @@ export default function PublicLayout(props) {
                         </Switch>
                     </Suspense>}
                 </main>
+                    <Footer />
 
                 {/* <Footer /> */}
             </div>

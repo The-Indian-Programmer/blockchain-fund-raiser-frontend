@@ -19,3 +19,14 @@ export function isEmpty(obj) {
 	}
 	return false
 }
+
+
+export function isWalletConnected(userData) {
+	let isConnected = false;
+    if (isEmpty(userData.address) && isEmpty(userData.isConnected)) {
+        isConnected = false;
+    } else {
+        isConnected = true;
+    }
+	return isConnected;
+}

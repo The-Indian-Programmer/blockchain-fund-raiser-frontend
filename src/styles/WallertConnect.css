@@ -29,11 +29,10 @@
   }
   
   .flex:hover {
-    color: black; /* Text color on hover */
   }
   
   .flex:hover span {
-    background-color: white; /* Background color on hover */
+    
   }
   
   .flex:hover span.absolute {

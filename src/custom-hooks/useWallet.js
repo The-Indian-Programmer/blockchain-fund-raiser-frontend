@@ -24,7 +24,7 @@ export function useWallet() {
                     const network = await provider.getNetwork();
                     setChainId(network.chainId);
 
-                    dispatch(handleWalletConnect({ isConnected: true, connection: provider.connection, chainId: network.chainId, address }))
+                    dispatch(handleWalletConnect({ isConnected: true, connection: provider.connection ? provider.connection.url : null, chainId: network.chainId, address }))
                     setIsConnected(true);
                 } catch (err) {
                     dispatch(handleWalletConnect({ isConnected: false, connection: null, chainId: null, address: null }))
@@ -35,9 +35,11 @@ export function useWallet() {
                 setIsConnected(false);
             }
         }
-
-        connectWallet();
+        let isConnected = localStorage.getItem('isConnected');
+        if (isConnected == 'true') {
+            connectWallet();
+        }
     }, []);
 
-    return { isConnected, connection: provider ? provider.connection : null, chainId, address };
+    return { isConnected, connection: provider ? provider.connection ? provider.connection.url : null : null, chainId, address };
 }
