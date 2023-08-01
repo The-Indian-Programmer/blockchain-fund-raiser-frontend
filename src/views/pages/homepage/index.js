@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { useSelector } from 'react-redux'
 import { isWalletConnected } from '../../../configs/Funtions'
 import Swal from 'sweetalert2'
+import PaymentModal from './popup/PaymentModal'
 const HomePage = () => {
 
   const PAYABLE_VALUE = ethers.utils.parseEther('0.1')
@@ -10,6 +11,9 @@ const HomePage = () => {
 
   // Redux vars
   const userData = useSelector(state => state.auth.userData)
+
+  // State vars
+  const [showPaymentModal, setShowPaymentModal] = React.useState(false)
 
   // function to handle handleEthereumPayment
   const handleEthereumPayment = async () => {
@@ -19,7 +23,7 @@ const HomePage = () => {
   // function to handle eth payment
   const handleContribute = () => {
     if (isWalletConnected(userData)) {
-      handleEthereumPayment()
+      setShowPaymentModal(true)
     } else {
       Swal.fire('Connect your wallet', '', 'question')
     }
@@ -40,6 +44,8 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+
+      <PaymentModal />
     </React.Fragment>
   )
 }
